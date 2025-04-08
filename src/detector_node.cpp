@@ -3,16 +3,15 @@
 	--------------------------
 	Run detector node
 */
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <onboard_detector/dynamicDetector.h>
 
-int main(int argc, char** argv){
-	ros::init(argc, argv, "dyanmic_detector_node");
-	ros::NodeHandle nh;
-
-	onboardDetector::dynamicDetector d (nh);
-
-	ros::spin();
-
-	return 0;
+int main(int argc, char** argv) {
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<onboardDetector::DynamicDetector>();
+    node->initDetector();
+    rclcpp::spin(node);
+    rclcpp::shutdown();
+    
+    return 0;
 }

@@ -1,73 +1,76 @@
-localization_mode: 0 # 0: pose (default) 1: odom
+/dynamic_detector:
+  ros__parameters:
+    onboard_detector:
+      localization_mode: 1 # 0: pose (default) 1: odom
 
-depth_image_topic: /camera/depth/image_rect_raw
-aligned_depth_image_topic: /camera/aligned_depth_to_color/image_raw
-pose_topic: /mavros/local_position/pose
-odom_topic: /mavros/local_position/odom
+      depth_image_topic: /oak/stereo/image_raw
+      aligned_depth_image_topic: /oak/stereo/image_raw # Only used for YOLO
+      pose_topic: /mavros/local_position/pose # Only used if localization_mode is equal to 0
+      odom_topic: /oak/odom
 
 
-# Camera Parameters
-depth_intrinsics: [387.1536560058594, 387.1536560058594, 321.3246154785156, 233.5471954345703] # fx,  fy, cx, cy realsense
-color_intrinsics: [604.404296875, 604.404296875, 325.03704833984375, 245.77059936523438] # intel realsense
-depth_scale_factor: 1000 # 1000 for Intel Realsense Camera
-depth_min_value: 0.5
-depth_max_value: 5.0
-depth_filter_margin: 10 # filter
-depth_skip_pixel: 2  # filter
-image_cols: 640
-image_rows: 480
-body_to_camera: [0.0,  0.0,  1.0,  0.065,
-                -1.0,  0.0,  0.0,  0.01,   
-                 0.0, -1.0,  0.0,  0.12,
-                 0.0,  0.0,  0.0,  1.0]
-body_to_camera_color: [0.0,  0.0,  1.0,  0.065,
-                      -1.0,  0.0,  0.0,  0.025,   
-                       0.0, -1.0,  0.0,  0.12,
-                       0.0,  0.0,  0.0,  1.0]
+      # Camera Parameters
+      depth_intrinsics: [497.81683349609375, 498.4327392578125, 332.11151123046875, 171.92788696289062]  # fx,  fy, cx, cy realsense
+      color_intrinsics: [995.6336669921875, 996.865478515625, 664.2230224609375, 343.85577392578125] # Only used for YOLO
+      depth_scale_factor: 500.0 # 1000 for Intel Realsense Camera
+      depth_min_value: 0.5
+      depth_max_value: 5.0
+      depth_filter_margin: 10 # filter
+      depth_skip_pixel: 2  # filter
+      image_cols: 640
+      image_rows: 360
+      body_to_camera: [0.0,  0.0,  1.0,  0.065,
+                      -1.0,  0.0,  0.0,  0.01,   
+                      0.0, -1.0,  0.0,  0.12,
+                      0.0,  0.0,  0.0,  1.0]
+      body_to_camera_color: [0.0,  0.0,  1.0,  0.065,
+                            -1.0,  0.0,  0.0,  0.025,   
+                            0.0, -1.0,  0.0,  0.12,
+                            0.0,  0.0,  0.0,  1.0]
 
-# Raycasting (max depth)
-raycast_max_length: 5.0
+      # Raycasting (max depth)
+      raycast_max_length: 5.0
 
-# time difference
-time_difference: 0.033
+      # time difference
+      time_difference: 0.033
 
-# sensor data processing
-voxel_occupied_thresh: 15 # min num of points for a voxel to be occupied in voxel filter
+      # sensor data processing
+      voxel_occupied_thresh: 15 # min num of points for a voxel to be occupied in voxel filter
 
-# dbscan
-ground_height: 0.2  # height of ground to remove ground points
-dbscan_min_points_cluster: 10 # 20: 4.0m range; 30: 3.5m range 40: 3.0m range
-dbscan_search_range_epsilon: 0.1 # searching range radius
+      # dbscan
+      ground_height: 0.2  # height of ground to remove ground points
+      dbscan_min_points_cluster: 10 # 20: 4.0m range; 30: 3.5m range 40: 3.0m range
+      dbscan_search_range_epsilon: 0.1 # searching range radius
 
-# bounding box filtering
-filtering_BBox_IOU_threshold: 0.05
-yolo_overwrite_distance: 3
+      # bounding box filtering
+      filtering_BBox_IOU_threshold: 0.05
+      yolo_overwrite_distance: 3.0
 
-# tracking and data association
-history_size: 100 # size of tracking history. history[0] is current detection
-similarity_threshold: 0.02 # similiary threshold for data association matching comparison
-fix_size_history_threshold: 10 # History threshold (num of frames) to fix box size
-fix_size_dimension_threshold: 0.4 # dimension threshold (size of proportional) to fix box size
+      # tracking and data association
+      history_size: 100 # size of tracking history. history[0] is current detection
+      similarity_threshold: 0.02 # similiary threshold for data association matching comparison
+      fix_size_history_threshold: 10 # History threshold (num of frames) to fix box size
+      fix_size_dimension_threshold: 0.4 # dimension threshold (size of proportional) to fix box size
 
-e_p: 0.25
-e_q_pos: 0.01
-e_q_vel: 0.05
-e_q_acc: 0.05
-e_r_pos: 0.04
-e_r_vel: 0.3
-e_r_acc: 0.6
+      e_p: 0.25
+      e_q_pos: 0.01
+      e_q_vel: 0.05
+      e_q_acc: 0.05
+      e_r_pos: 0.04
+      e_r_vel: 0.3
+      e_r_acc: 0.6
 
-kalman_filter_averaging_frames: 10
+      kalman_filter_averaging_frames: 10
 
-# classification
-frame_skip: 5 # num of frames skiped when comparing 2 point clouds
-dynamic_velocity_threshold: 0.15
-dynamic_voting_threshold: 0.8
-maximum_skip_ratio: 0.5 # the upper limit of points that are skipped(out of previous FOV) to be classfified as dynamic
-frames_force_dynamic: 10 # Range of searching dynamic obstacles in box history
-frames_force_dynamic_check_range: 30 # threshold for forcing dynamic obstacles
-dynamic_consistency_threshold: 1 # obstacles being voted as dynamic for continuous k frames are eligible to be classified as dynamic
+      # classification
+      frame_skip: 5 # num of frames skiped when comparing 2 point clouds
+      dynamic_velocity_threshold: 0.15
+      dynamic_voting_threshold: 0.8
+      maximum_skip_ratio: 0.5 # the upper limit of points that are skipped(out of previous FOV) to be classfified as dynamic
+      frames_force_dynamic: 10 # Range of searching dynamic obstacles in box history
+      frames_force_dynamic_check_range: 30 # threshold for forcing dynamic obstacles
+      dynamic_consistency_threshold: 1 # obstacles being voted as dynamic for continuous k frames are eligible to be classified as dynamic
 
-# constrain size
-constrain_size: true
-target_object_size: [0.5, 0.5, 1.7]
+      # constrain size
+      constrain_size: true
+      target_object_size: [0.5, 0.5, 1.7]
