@@ -1,4 +1,7 @@
-# Onboard Dynamic Object Detection and Tracking for Autonomous Mobile Robots  
+# Onboard Dynamic Object Detection and Tracking for Autonomous Mobile Robots for ROS2 
+
+The repository has been forked from https://github.com/Zhefan-Xu/onboard_detector and integrated with ROS2.
+
 ## I. Introduction
 This repository contains the implementation of Dynamic Obstacle Detection and Tracking (DODT) algorithm which aims at detecting and tracking dynamic obstacles for robots with extremely constraint computational resources.
 
@@ -19,43 +22,16 @@ https://github.com/Zhefan-Xu/onboard_detector/assets/55560905/2f736e5d-ffbb-4e31
 
 
 ## II. Installation
-This package has been tested on Ubuntu 18.04/20.04 LTS with ROS Melodic/Noetic on [Intel Realsense D435i](https://www.intelrealsense.com/depth-camera-d435i/) and NVIDIA Jetson [Xavier NX](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-xavier-series/), [Orin NX](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/) and [Intel NUC](https://www.intel.com/content/www/us/en/products/details/nuc.html). Make sure you have installed the compatible ROS version. 
+This package has been tested on Ubuntu 22.04 LTS with ROS Humble on [Oak-D Lite]. Make sure you have installed the compatible ROS version. 
 ```
-# this package needs ROS vision_msgs package
-sudo apt install ros-noetic-vision-msgs
+# this package needs ROS2 vision_msgs package
+sudo apt install ros-humble-vision-msgs
 
-cd ~/catkin_ws/src
-git clone https://github.com/Zhefan-Xu/onboard_detector.git
+cd ~/ros2_ws/src
+git clone https://github.com/Jakubach/ros2_onboard_detector.git
 cd ..
-catkin_make
+colcon build
 ```
-
-## III. Run DEMO
-### a. Run on dataset
-Please download the rosbag file from this [link](https://cmu.box.com/s/aiixv3p3pzufodsrcv8a2yqpiibu28ds):
-```
-rosbag play -l multiple-objects.bag
-roslaunch onboard_detector run_detector.launch
-```
-- Example with single dynamic object:
-
-
-
-https://github.com/Zhefan-Xu/onboard_detector/assets/55560905/be2d6103-1579-4daf-aefb-9d18f42e2dfe
-
-
-
-- Example with multiple dynamic objects:
-
-
-
-https://github.com/Zhefan-Xu/onboard_detector/assets/55560905/3b6a0feb-7b2c-4d67-8696-3a489abb9043
-
-
-
-
-
-
 
 
 ### b. Run on your device
@@ -65,24 +41,19 @@ From the parameter file, you can find that the algorithm expects the following d
 
 - Depth image: ```/camera/depth/image_rect_raw```
 
-- Robot pose: ```/mavros/local_position/pose```
+- Robot pose (used when `localization_mode` is set to `1`): ```/mavros/local_position/pose```
 
-- Robot odom (optional): ```/mavros/local_position/odom```
+- Robot odom (used when `localization_mode` is set to `0`): ```/mavros/local_position/odom```
 
-- Color image (optional if YOLO is applied): ```/camera/color/image_rect_raw```
+- Color image (used when YOLO is applied): ```/camera/color/image_rect_raw```
 
-- Aligned depth image (optional): ```/camera/aligned_depth_to_color/image_raw```
+- Aligned depth image (used when YOLO is applied): ```/camera/aligned_depth_to_color/image_raw```
 
 ```
 # Launch your device first. Make sure it has the above data.
-roslaunch onboard_detector run_detector.launch
+ros2 launch onboard_detector run_detector.launch
 ```
 
-## IV. Issue
-For ```ImportError: No module named yaml``` on Ubuntu 20.04, please run: 
-```
-sudo ln -sf /usr/bin/python3 /usr/local/bin/python
-```
 
 ## V. Citation and Reference
 If you find this work useful, please cite the paper:
@@ -98,3 +69,7 @@ If you find this work useful, please cite the paper:
   publisher={IEEE}
 }
 ```
+
+## VI. TODO list:
+- Provide a ROS2 demo bag
+- Provide a YOLO implementation from the main repository
