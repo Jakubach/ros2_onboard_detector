@@ -41,9 +41,9 @@ From the parameter file, you can find that the algorithm expects the following d
 
 - Depth image: ```/camera/depth/image_rect_raw```
 
-- Robot pose (used when `localization_mode` is set to `1`): ```/mavros/local_position/pose```
+- Robot pose (used when `localization_mode` is set to `0`): ```/mavros/local_position/pose```
 
-- Robot odom (used when `localization_mode` is set to `0`): ```/mavros/local_position/odom```
+- Robot odom (used when `localization_mode` is set to `1`): ```/mavros/local_position/odom```
 
 - Color image (used when YOLO is applied): ```/camera/color/image_rect_raw```
 
