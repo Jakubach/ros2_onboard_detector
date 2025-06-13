@@ -310,12 +310,12 @@ void DynamicDetector::registerCallback() {
         this->alignedDepthTopicName_, 10,
         std::bind(&DynamicDetector::alignedDepthCB, this, std::placeholders::_1));
 
-    // YOLO detection results subscription
-    // this->yoloDetectionSub_ = this->create_subscription<vision_msgs::msg::Detection2DArray>(
-    //     "yolo_detector/detected_bounding_boxes",
-    //     rclcpp::QoS(10),
-    //     std::bind(&DynamicDetector::yoloDetectionCB, this, std::placeholders::_1)
-    // );
+    //YOLO detection results subscription
+    this->yoloDetectionSub_ = this->create_subscription<vision_msgs::msg::Detection2DArray>(
+        "yolo_detector/detected_bounding_boxes",
+        rclcpp::QoS(10),
+        std::bind(&DynamicDetector::yoloDetectionCB, this, std::placeholders::_1)
+    );
 
     // detection timer
     this->detectionTimer_ = this->create_wall_timer(
@@ -419,7 +419,7 @@ void DynamicDetector::detectionCB()
 {
     this->dbscanDetect();
     this->uvDetect();
-    //this->yoloDetectionTo3D();
+    this->yoloDetectionTo3D();
     this->filterBBoxes();
     this->newDetectFlag_ = true;
 }
