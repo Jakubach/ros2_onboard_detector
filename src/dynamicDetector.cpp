@@ -311,11 +311,11 @@ void DynamicDetector::registerCallback() {
         std::bind(&DynamicDetector::alignedDepthCB, this, std::placeholders::_1));
 
     // YOLO detection results subscription
-    this->yoloDetectionSub_ = this->create_subscription<vision_msgs::msg::Detection2DArray>(
-        "yolo_detector/detected_bounding_boxes",
-        rclcpp::QoS(10),
-        std::bind(&DynamicDetector::yoloDetectionCB, this, std::placeholders::_1)
-    );
+    // this->yoloDetectionSub_ = this->create_subscription<vision_msgs::msg::Detection2DArray>(
+    //     "yolo_detector/detected_bounding_boxes",
+    //     rclcpp::QoS(10),
+    //     std::bind(&DynamicDetector::yoloDetectionCB, this, std::placeholders::_1)
+    // );
 
     // detection timer
     this->detectionTimer_ = this->create_wall_timer(
@@ -419,7 +419,7 @@ void DynamicDetector::detectionCB()
 {
     this->dbscanDetect();
     this->uvDetect();
-    this->yoloDetectionTo3D();
+    //this->yoloDetectionTo3D();
     this->filterBBoxes();
     this->newDetectFlag_ = true;
 }
@@ -428,7 +428,6 @@ void DynamicDetector::trackingCB()
 {
     std::vector<int> bestMatch;
     this->boxAssociation(bestMatch);
-
     if (!bestMatch.empty()) {
         this->kalmanFilterAndUpdateHist(bestMatch);
     } else {
@@ -922,7 +921,7 @@ void DynamicDetector::kalmanFilterAndUpdateHist(const std::vector<int>& bestMatc
             this->getKalmanObservationAcc(currDetectedBBox, bestMatch[i], Z);
             filtersTemp.back().estimate(Z, MatrixXd::Zero(6,1));
             
-            
+            int size = 6;
             newEstimatedBBox.x = filtersTemp.back().output(0);
             newEstimatedBBox.y = filtersTemp.back().output(1);
             newEstimatedBBox.z = currDetectedBBox.z;
@@ -1066,23 +1065,38 @@ void DynamicDetector::getKalmanObservationVel(const onboardDetector::box3D& curr
     Z(3) = (currDetectedBBox.y-prevMatchBBox.y)/(this->dt_*k);
 }
 
-void DynamicDetector::getKalmanObservationAcc(const onboardDetector::box3D& currDetectedBBox, int bestMatchIdx, MatrixXd& Z){
+void DynamicDetector::getKalmanObservationAcc(const onboardDetector::box3D& currDetectedBBox, int bestMatchIdx, Eigen::MatrixXd& Z){
     Z.resize(6, 1);
-    Z(0) = currDetectedBBox.x;
-    Z(1) = currDetectedBBox.y;
+    Z.setZero();
 
-    // use previous k frame for velocity estimation
-    int k = this->kfAvgFrames_;
+    if (bestMatchIdx < 0 || bestMatchIdx >= static_cast<int>(boxHist_.size())) {
+        return;
+    }
+
     int historySize = this->boxHist_[bestMatchIdx].size();
-    if (historySize < k){
+    if (historySize == 0) {
+        return;
+    }
+
+    int k = this->kfAvgFrames_;
+    if (k <= 0) {
+        k = 1;
+    }
+    if (historySize < k) {
         k = historySize;
     }
+    if (k <= 0) {
+        return;
+    }
+
     onboardDetector::box3D prevMatchBBox = this->boxHist_[bestMatchIdx][k-1];
 
-    Z(2) = (currDetectedBBox.x - prevMatchBBox.x)/(this->dt_*k);
-    Z(3) = (currDetectedBBox.y - prevMatchBBox.y)/(this->dt_*k);
-    Z(4) = (Z(2) - prevMatchBBox.Vx)/(this->dt_*k);
-    Z(5) = (Z(3) - prevMatchBBox.Vy)/(this->dt_*k);
+    Z(0) = currDetectedBBox.x;
+    Z(1) = currDetectedBBox.y;
+    Z(2) = (currDetectedBBox.x - prevMatchBBox.x) / (this->dt_ * k);
+    Z(3) = (currDetectedBBox.y - prevMatchBBox.y) / (this->dt_ * k);
+    Z(4) = (Z(2) - prevMatchBBox.Vx) / (this->dt_ * k);
+    Z(5) = (Z(3) - prevMatchBBox.Vy) / (this->dt_ * k);
 }
 
 void DynamicDetector::transformUVBBoxes(std::vector<onboardDetector::box3D>& bboxes){
@@ -1265,7 +1279,7 @@ void DynamicDetector::projectDepthImage(){
             this->pointsDepth_[this->projPointsNum_] = depth;
             this->projPointsNum_ = this->projPointsNum_ + 1;
         }
-    } 
+    }
 }
 
 

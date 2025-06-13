@@ -3,22 +3,22 @@
     onboard_detector:
       localization_mode: 1 # 0: pose (default) 1: odom
 
-      depth_image_topic: /oak/stereo/image_raw
+      depth_image_topic: /top_camera/depth/image
       aligned_depth_image_topic: /oak/stereo/image_raw # Only used for YOLO
       pose_topic: /mavros/local_position/pose # Only used if localization_mode is equal to 0
-      odom_topic: /oak/odom
+      odom_topic: /odom
 
 
       # Camera Parameters
-      depth_intrinsics: [497.81683349609375, 498.4327392578125, 332.11151123046875, 171.92788696289062]  # fx,  fy, cx, cy realsense
-      color_intrinsics: [995.6336669921875, 996.865478515625, 664.2230224609375, 343.85577392578125] # Only used for YOLO
-      depth_scale_factor: 500.0 # 1000 for Intel Realsense Camera
-      depth_min_value: 0.5
-      depth_max_value: 5.0
+      depth_intrinsics: [385.10577392578125, 385.10577392578125, 320.7642517089844, 237.66253662109375]  # fx,  fy, cx, cy realsense
+      color_intrinsics: [383.27294921875, 382.9224548339844, 315.00140380859375, 240.09783935546875] # Only used for YOLO
+      depth_scale_factor: 1000.0 # 1000 for Intel Realsense Camera
+      depth_min_value: 0.3
+      depth_max_value: 2.0
       depth_filter_margin: 10 # filter
       depth_skip_pixel: 2  # filter
       image_cols: 640
-      image_rows: 360
+      image_rows: 480
       body_to_camera: [0.0,  0.0,  1.0,  0.065,
                       -1.0,  0.0,  0.0,  0.01,   
                       0.0, -1.0,  0.0,  0.12,
@@ -29,7 +29,7 @@
                             0.0,  0.0,  0.0,  1.0]
 
       # Raycasting (max depth)
-      raycast_max_length: 5.0
+      raycast_max_length: 2.0
 
       # time difference
       time_difference: 0.033
@@ -38,7 +38,7 @@
       voxel_occupied_thresh: 15 # min num of points for a voxel to be occupied in voxel filter
 
       # dbscan
-      ground_height: 0.2  # height of ground to remove ground points
+      ground_height: 0.3  # height of ground to remove ground points
       dbscan_min_points_cluster: 10 # 20: 4.0m range; 30: 3.5m range 40: 3.0m range
       dbscan_search_range_epsilon: 0.1 # searching range radius
 

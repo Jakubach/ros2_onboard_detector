@@ -142,22 +142,19 @@ namespace onboardDetector{
     {
         this->row_downsample = 4;
         this->col_scale = 0.5;
-        this->min_dist = 10;
-        this->max_dist = 8000;// unit: m
+        //this->min_dist = 10;
+        //this->max_dist = 8000;// unit: m
         this->threshold_point = 3;
         this->threshold_line = 2;
         this->min_length_line = 6;
         this->show_bounding_box_U = true;
         this->show_bounding_box_U = true;
         // the following intrinsic parameters can be found in /camera/../camera_info
-        this->fx = 608.08740234375;
-        this->fy = 608.1791381835938;
-        this->px = 317.48284912109375;
-        this->py = 234.11557006835938;
+        //this->fx = 608.08740234375;
+        //this->fy = 608.1791381835938;
+        //this->px = 317.48284912109375;
+        //this->py = 234.11557006835938;
 
-
-        this->x0 = 0;
-        this->y0 = 0;
     }
 
     void UVdetector::readdata(queue<cv::Mat> depthq)
