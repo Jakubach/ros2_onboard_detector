@@ -140,8 +140,8 @@ namespace onboardDetector{
     // UVdetector     
     UVdetector::UVdetector()
     {
-        this->row_downsample = 4;
-        this->col_scale = 0.5;
+        this->row_downsample = 1; // 4
+        this->col_scale = 1.0; // 0.5
         //this->min_dist = 10;
         //this->max_dist = 8000;// unit: m
         this->threshold_point = 3;

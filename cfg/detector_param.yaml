@@ -10,15 +10,15 @@
 
 
       # Camera Parameters
-      depth_intrinsics: [385.10577392578125, 385.10577392578125, 320.7642517089844, 237.66253662109375]  # fx,  fy, cx, cy realsense
+      depth_intrinsics: [35.43507766723633, 35.43507766723633, 35.40365219116211, 19.78491973876953]   # fx,  fy, cx, cy realsense
       color_intrinsics: [383.27294921875, 382.9224548339844, 315.00140380859375, 240.09783935546875] # Only used for YOLO
       depth_scale_factor: 1000.0 # 1000 for Intel Realsense Camera
       depth_min_value: 0.3
       depth_max_value: 2.0
-      depth_filter_margin: 10 # filter
-      depth_skip_pixel: 2  # filter
-      image_cols: 640
-      image_rows: 480
+      depth_filter_margin: 5 # filter
+      depth_skip_pixel: 1  # filter
+      image_cols: 72
+      image_rows: 40
       body_to_camera: [0.0,  0.0,  1.0,  0.065,
                       -1.0,  0.0,  0.0,  0.01,   
                       0.0, -1.0,  0.0,  0.12,
@@ -32,14 +32,14 @@
       raycast_max_length: 2.0
 
       # time difference
-      time_difference: 0.033
+      time_difference: 0.03
 
       # sensor data processing
-      voxel_occupied_thresh: 15 # min num of points for a voxel to be occupied in voxel filter
+      voxel_occupied_thresh: 3 # min num of points for a voxel to be occupied in voxel filter
 
       # dbscan
       ground_height: 0.3  # height of ground to remove ground points
-      dbscan_min_points_cluster: 10 # 20: 4.0m range; 30: 3.5m range 40: 3.0m range
+      dbscan_min_points_cluster: 3 # 20: 4.0m range; 30: 3.5m range 40: 3.0m range
       dbscan_search_range_epsilon: 0.1 # searching range radius
 
       # bounding box filtering
